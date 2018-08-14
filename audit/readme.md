@@ -92,7 +92,7 @@ The audit report is focused on the following key areas - though this is not an e
 
 ## Observations
 
-# TODO
+- The function `setPublicRound` allows you to start/finish a public or private round. There is no check that the public or private round has already been finished, so it would be possible to start either round multiple times
 
 <br>
 
