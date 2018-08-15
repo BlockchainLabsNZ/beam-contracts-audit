@@ -96,7 +96,8 @@ The audit report is focused on the following key areas - though this is not an e
 
 ## Observations
 
-- The function `setPublicRound` allows you to start/finish a public or private round. There is no check that the public or private round has already been finished, so it would be possible to start either round multiple times
+- The function `setPublicRound` allows you to start/finish a public or private round. There is no check that the public or private round has already been finished, so it would be possible to start either round multiple times.
+- The usage for the `buyForFiat` function is not well documented, this function is only for owners so this is not a huge issue. How to calculate `_usdUnits` is not clear unless you hunt around the contract for other usages.
 
 <br>
 
