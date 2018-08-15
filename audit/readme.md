@@ -101,7 +101,9 @@ The audit report is focused on the following key areas - though this is not an e
 
 ## Conclusion
 
-# TODO
+The developers demonstrated an understanding of Solidity and smart contract development, and they have used a previously audited framework to build their contracts from. We took part in carefully reviewing all source code provided, including static, dynamic, and functional testing methodology.
+
+Overall we consider the resulting contracts following the audit feedback period adequate and have not identified any potential vulnerabilities. This contract has a low level risk of ETH and BEAM being hacked or stolen from the inspected contracts.
 
 
 <hr>
