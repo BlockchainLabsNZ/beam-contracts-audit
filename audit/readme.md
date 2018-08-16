@@ -114,10 +114,9 @@ The developers demonstrated an understanding of Solidity and smart contracts. Th
 We took part in carefully reviewing all source code provided
 
 Overall we consider the resulting contracts following the audit feedback period adequate and any potential vulnerabilities have now been fully resolved. These contracts have a low level risk of ETH and BEAM being hacked or stolen from the inspected contracts.
---
 
-
-<hr>
+<br>
+___
 
 ### Disclaimer
 
