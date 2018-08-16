@@ -79,12 +79,17 @@ The audit report is focused on the following key areas - though this is not an e
 
 ### Minor
 - **Typo in event name MenegerUpdated** - `Correctness` [#L16](https://github.com/BlockchainLabsNZ/beam-contracts-audit/blob/master/contracts/BeamToken.sol#L16]) and [#L70](https://github.com/BlockchainLabsNZ/beam-contracts-audit/blob/master/contracts/BeamToken.sol#L70])  [View on GitHub](https://github.com/BlockchainLabsNZ/beam-contracts-audit/issues/6)
+  - [x] Fixed: [468b86](https://gitlab.com/hubbleland-public/beam-smartcontract/commit/468b860833c3a9f450ce56d0efbfd1047ff2592a)
 - **Prefer explicit declaration of variable types** - `Best practice` Prefer to use explicit variables types. It is recommended to explicitly define your variable types and keep consistency. This confirms your intent and safeguards against a future when the default type changes. [#L411](https://github.com/BlockchainLabsNZ/beam-contracts-audit/blob/master/contracts/BeamToken.sol#L411]) Prefer `uint256` instead of `uint`.  [View on GitHub](https://github.com/BlockchainLabsNZ/beam-contracts-audit/issues/4)
+  - [x] Fixed: [468b86](https://gitlab.com/hubbleland-public/beam-smartcontract/commit/468b860833c3a9f450ce56d0efbfd1047ff2592a)
 - **Function docstring not accurate to function** - `Best practice` The `_postValidatePurchase` docstring mentions that the function should use `revert` statements to rollback when valid conditions are not met. The `_checkSeed` and `_checkSoftCap` functions do not use any reverts. [#L873-L874](https://github.com/BlockchainLabsNZ/beam-contracts-audit/blob/master/contracts/BeamCrowdsale.sol#L873-L874])  [View on GitHub](https://github.com/BlockchainLabsNZ/beam-contracts-audit/issues/3)
+  - [x] Fixed: [468b86](https://gitlab.com/hubbleland-public/beam-smartcontract/commit/468b860833c3a9f450ce56d0efbfd1047ff2592a)
 - **Avoid magic numbers** - `Best practice` In `BeamCrowdsale.sol` there are some hard coded values, this code could be more readable/maintainable if the values were saved to a variable instead. The two `oraclize_query` functions contain this line: `if (price > 1 ether + tx.gasprice*200000) return 0; // unexpectedly high price`  [View on GitHub](https://github.com/BlockchainLabsNZ/beam-contracts-audit/issues/1)
+  - [x] Fixed: [468b86](https://gitlab.com/hubbleland-public/beam-smartcontract/commit/468b860833c3a9f450ce56d0efbfd1047ff2592a)
 
 ### Moderate
 - **Race condition found when user claiming their ETH from the contract** - `Best practice`, Security` [#L643-L644](https://github.com/BlockchainLabsNZ/beam-contracts-audit/blob/3544b886cf847af0cf4c39dfa1b05d30df419813/contracts/BeamCrowdsale.sol#L643-L644]) This is a typical race condition. It can cause you lose all the ETHs deposited in the contract. Fixing is required! [More infor about Race Condition](https://github.com/ConsenSys/smart-contract-best-practices/blob/master/docs/known_attacks.md#reentrancy)  [View on GitHub](https://github.com/BlockchainLabsNZ/beam-contracts-audit/issues/5)
+  - [x] Fixed: [468b86](https://gitlab.com/hubbleland-public/beam-smartcontract/commit/468b860833c3a9f450ce56d0efbfd1047ff2592a)
 
 ### Major
 - None found
