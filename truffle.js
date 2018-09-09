@@ -22,7 +22,12 @@ module.exports = {
         }
     },
     mocha: {
-        enableTimeouts: false
+        enableTimeouts: false,
+        reporter: 'eth-gas-reporter',
+        reporterOptions : {
+          currency: 'USD',
+          gasPrice: 20
+        }
     },
     solc: { optimizer: { enabled: true, runs: 200 }}
 }

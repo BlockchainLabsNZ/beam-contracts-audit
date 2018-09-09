@@ -352,6 +352,7 @@ $ npm install
 ### Test
 
 ```bash
+$ ganache-cli&
 $ truffle test --network ganache
 ```
 

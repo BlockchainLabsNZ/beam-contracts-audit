@@ -497,8 +497,9 @@ contract BeamCrowdsale_TEST_ONLY is Whitelist, PriceChecker, Pausable {
         require(!softCapReached);
         require(funds[msg.sender] > 0);
         require(address(this).balance >= funds[msg.sender]);
-        msg.sender.transfer(funds[msg.sender]);
+        uint256 toSend = funds[msg.sender];
         delete funds[msg.sender];
+        msg.sender.transfer(toSend);
     }
 
     /**
@@ -627,7 +628,6 @@ contract BeamCrowdsale_TEST_ONLY is Whitelist, PriceChecker, Pausable {
         whenNotPaused
         onlyActualPrice
     {
-
         address _beneficiary = msg.sender;
 
         uint256 _weiAmount = msg.value;
@@ -656,7 +656,7 @@ contract BeamCrowdsale_TEST_ONLY is Whitelist, PriceChecker, Pausable {
      */
     function tokenPrice() public view returns(uint256) {
         uint256 _supplyInt = token.totalSupply().div(10 ** decimals);
-        return uint256(10 ** 18).add(_supplyInt.mul(10 ** 9));
+        return uint256(10 ** 18).add(_supplyInt.mul(increasing));
     }
 
     // -----------------------------------------
@@ -779,7 +779,7 @@ contract BeamCrowdsale_TEST_ONLY is Whitelist, PriceChecker, Pausable {
         uint256 _tokenPrice = tokenPrice();
         uint256 _tokenIntAmount = tokenIntAmount(_tokenPrice, _usdUnits);
         uint256 _tokenUnitAmount = _tokenIntAmount.mul(10 ** decimals);
-        uint256 _newPrice = tokenPrice().add(_tokenIntAmount.mul(10 ** 9));
+        uint256 _newPrice = tokenPrice().add(_tokenIntAmount.mul(increasing));
         
         uint256 _usdRemainder;
         
