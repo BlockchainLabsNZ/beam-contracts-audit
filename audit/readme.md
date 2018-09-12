@@ -109,11 +109,8 @@ The audit report is focused on the following key areas - though this is not an e
 <br>
 
 ## Conclusion
-The developers demonstrated an understanding of Solidity and smart contracts. They were receptive to the feedback provided to help improve the robustness of the contracts.
+This code is currently not in a state of code freeze and we have been provided an additional updates. Which we have not completed our audits on. We recommend that users of these smart contracts pay careful attention to the version that they are interacting with.
 
-We took part in carefully reviewing all source code provided
-
-Overall we consider the resulting contracts following the audit feedback period adequate and any potential vulnerabilities have now been fully resolved. These contracts have a low level risk of ETH and BEAM being hacked or stolen from the inspected contracts.
 
 <br>
 ___
