@@ -4,7 +4,7 @@
 ## Preamble
 This audit report was undertaken by <b>BlockchainLabs.nz</b> for the purpose of providing feedback to <b>HubbleLand</b>. <br>It has subsequently been shared publicly without any express or implied warranty.
 
-Solidity contracts were sourced directly from the HubbleLand team, we would encourage all community members and token holders to make their own assessment of the contracts once they are deployed and verified.
+Solidity contracts were sourced directly from the HubbleLand team at this commit hash [c136c0ee7bc319dc802e61bf648029a71a4d25f6](https://gitlab.com/hubbleland-public/beam-smartcontract/tree/c136c0ee7bc319dc802e61bf648029a71a4d25f6), we would encourage all community members and token holders to make their own assessment of the contracts once they are deployed and verified.
 
 <br>
 
