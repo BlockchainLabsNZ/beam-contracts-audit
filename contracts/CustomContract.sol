@@ -2,12 +2,19 @@ pragma solidity 0.4.24;
 
 
 /**
- * @title interfaceBeamERC20
+ * @title interfaceERC20
  * @dev Simpler version of ERC20 interface
  */
-contract interfaceBeamERC20 {
+contract interfaceERC20 {
     function balanceOf(address who) public view returns (uint256);
     function transfer(address to, uint256 value) public returns (bool);
+}
+
+/**
+ * @title interfaceCrowdsale
+ */
+contract interfaceCrowdsale {
+    function buyTokens() public payable;
 }
 
 /**
@@ -187,8 +194,8 @@ contract Pausable is Ownable {
 contract CustomContract is Whitelist, Pausable {
     using SafeMath for uint256;
 
-    interfaceBeamERC20 public token;
-    address public crowdsale;
+    interfaceERC20 public token;
+    interfaceCrowdsale public crowdsale;
 
     /**
      * @param _crowdsale Address of the crowdsale contract
@@ -197,30 +204,42 @@ contract CustomContract is Whitelist, Pausable {
         require(_token != address(0));
         require(_crowdsale != address(0));
 
-        token = interfaceBeamERC20(_token);
-        crowdsale = _crowdsale;
+        token = interfaceERC20(_token);
+        crowdsale = interfaceCrowdsale(_crowdsale);
     }
 
     /**
      * @dev fallback function
      */
-    function () public  payable {
-        buyTokens();
+    function () public payable {
+        if (msg.sender != address(crowdsale)) {
+            buyTokens();
+        }
     }
 
     /**
      * @dev token purchase
      */
     function buyTokens() onlyWhitelisted whenNotPaused public payable {
+        //function buyTokens() public payable {
         uint256 amount = msg.value;
-        uint256 ethAmountToOwner = amount.mul(35).div(115);
+        uint256 ethAmountToOwner = amount.mul(15).div(115);
         uint256 ethAmountToCrowdsale = amount.sub(ethAmountToOwner);
 
         owner.transfer(ethAmountToOwner);
-        crowdsale.transfer(ethAmountToCrowdsale);
+        crowdsale.buyTokens.value(ethAmountToCrowdsale)();
 
         uint256 tokenAmount = token.balanceOf(this);
+        require(tokenAmount != 0);
         token.transfer(msg.sender, tokenAmount);
+    }
+
+    function withdrawFunds(address _beneficiary, uint256 _weiAmount)
+        external
+        onlyOwner
+    {
+        require(address(this).balance > _weiAmount);
+        _beneficiary.transfer(_weiAmount);
     }
 
 }
