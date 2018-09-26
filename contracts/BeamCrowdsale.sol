@@ -397,6 +397,7 @@ contract PriceChecker is UsingOraclize {
     uint256 public priceETHUSD; //price in cents
     uint256 public centsInDollar = 100;
     uint256 public lastPriceUpdate; //timestamp of the last price updating
+    uint256 public minUpdatePeriod = 3300; // min timestamp for update in sec
 
     event NewOraclizeQuery(string description);
     event PriceUpdated(uint256 price);
@@ -419,15 +420,20 @@ contract PriceChecker is UsingOraclize {
     * @dev Receives the response from oraclize.
     */
     function __callback(bytes32 myid, string result, bytes proof) public {
-        if (msg.sender != oraclize_cbAddress()) revert();
+        require((lastPriceUpdate + minUpdatePeriod) < now);
+        require(msg.sender == oraclize_cbAddress());
+
         priceETHUSD = parseInt(result, 2);
         lastPriceUpdate = now;
+
         emit PriceUpdated(priceETHUSD);
+
         _update(3600);
         return;
+
         proof; myid; //to silence the compiler warning
     }
-    
+
     /**
      * @dev Cyclic query to update ETHUSD price. Period is one hour.
      */
@@ -624,7 +630,7 @@ contract BeamCrowdsale is Whitelist, PriceChecker, Pausable {
 
         emit CrowdsaleFinished(weiRaised, usdRaised);
     }
-    
+
     /**
      * @dev Overriden inherited method to prevent calling from third persons
      */
@@ -640,8 +646,9 @@ contract BeamCrowdsale is Whitelist, PriceChecker, Pausable {
         require(!softCapReached);
         require(funds[msg.sender] > 0);
         require(address(this).balance >= funds[msg.sender]);
-        msg.sender.transfer(funds[msg.sender]);
+        uint256 toSend = funds[msg.sender];
         delete funds[msg.sender];
+        msg.sender.transfer(toSend);
     }
 
     /**
@@ -671,7 +678,7 @@ contract BeamCrowdsale is Whitelist, PriceChecker, Pausable {
         onlyActualPrice
     {
         uint256 _weiAmount = _usdUnits.mul(centsInDollar).div(priceETHUSD);
-        
+
         _preValidatePurchase(_beneficiary, _weiAmount);
 
         // calculate token amount to be created
@@ -770,7 +777,6 @@ contract BeamCrowdsale is Whitelist, PriceChecker, Pausable {
         whenNotPaused
         onlyActualPrice
     {
-
         address _beneficiary = msg.sender;
 
         uint256 _weiAmount = msg.value;
@@ -778,7 +784,7 @@ contract BeamCrowdsale is Whitelist, PriceChecker, Pausable {
 
         // calculate token amount to be created
         uint256 tokens = _getTokenAmount(_weiAmount);
-        
+
         _weiAmount = _weiAmount.sub(_applyDiscount(_weiAmount));
 
         funds[_beneficiary] = funds[_beneficiary].add(_weiAmount);
@@ -799,7 +805,7 @@ contract BeamCrowdsale is Whitelist, PriceChecker, Pausable {
      */
     function tokenPrice() public view returns(uint256) {
         uint256 _supplyInt = token.totalSupply().div(10 ** decimals);
-        return uint256(10 ** 18).add(_supplyInt.mul(10 ** 9));
+        return uint256(10 ** 18).add(_supplyInt.mul(increasing));
     }
 
     // -----------------------------------------
@@ -870,8 +876,7 @@ contract BeamCrowdsale is Whitelist, PriceChecker, Pausable {
     }
 
     /**
-     * @dev Validation of an executed purchase. Observe state and use revert
-     * statements to undo rollback when valid conditions are not met.
+     * @dev Validation of an executed purchase. Observes state.
      */
     function _postValidatePurchase() internal {
         if (!seedFinished) _checkSeed();
@@ -921,15 +926,15 @@ contract BeamCrowdsale is Whitelist, PriceChecker, Pausable {
         uint256 _tokenPrice = tokenPrice();
         uint256 _tokenIntAmount = tokenIntAmount(_tokenPrice, _usdUnits);
         uint256 _tokenUnitAmount = _tokenIntAmount.mul(10 ** decimals);
-        uint256 _newPrice = tokenPrice().add(_tokenIntAmount.mul(10 ** 9));
-        
+        uint256 _newPrice = tokenPrice().add(_tokenIntAmount.mul(increasing));
+
         uint256 _usdRemainder;
-        
+
         if (_tokenIntAmount == 0)
             _usdRemainder = _usdUnits;
         else
             _usdRemainder = _remainderAmount(_tokenPrice, _usdUnits, _tokenIntAmount);
-            
+
         _tokenUnitAmount = _tokenUnitAmount.add(_usdRemainder.mul(10 ** decimals).div(_newPrice));
         return _tokenUnitAmount;
     }
@@ -962,7 +967,7 @@ contract BeamCrowdsale is Whitelist, PriceChecker, Pausable {
     function _applyDiscount(uint256 _weiAmount) internal returns (uint256) {
         address _payer = msg.sender;
         uint256 _refundAmount;
-        
+
         if (!seedFinished) {
             _refundAmount = _weiAmount.mul(discountSeed).div(100);
         } else if (!publicRound) {
